@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\CreateDraftHandler;
+use App\CreateDraftRequest;
+use InvalidArgumentException;
 
 final class CliController
 {
@@ -36,6 +38,16 @@ HELP);
             return 0;
         }
 
+        $site = is_string($options['site'] ?? null) ? $options['site'] : '';
+        $username = is_string($options['username'] ?? null) ? $options['username'] : '';
+
+        try {
+            CreateDraftRequest::validateSiteUrl($site);
+            CreateDraftRequest::validateUsername($username);
+        } catch (InvalidArgumentException $exception) {
+            return $this->fail($exception->getMessage());
+        }
+
         $password = $this->password($options);
         if ($password === null) {
             return $this->fail(
@@ -44,8 +56,8 @@ HELP);
         }
 
         $result = $this->handler->handle([
-            'site' => $options['site'] ?? '',
-            'username' => $options['username'] ?? '',
+            'site' => $site,
+            'username' => $username,
             'password' => $password,
         ]);
 

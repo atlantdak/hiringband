@@ -14,17 +14,17 @@ final class CreateDraftRequest
 
     public function __construct(string $siteUrl, string $username, string $password)
     {
+        $this->siteUrl = self::validateSiteUrl($siteUrl);
+        $this->username = self::validateUsername($username);
+        $this->password = self::validatePassword($password);
+    }
+
+    public static function validateSiteUrl(string $siteUrl): string
+    {
         $siteUrl = trim($siteUrl);
-        $username = trim($username);
 
         if ($siteUrl === '') {
             throw new InvalidArgumentException('Site URL is required.');
-        }
-        if ($username === '') {
-            throw new InvalidArgumentException('Username is required.');
-        }
-        if ($password === '') {
-            throw new InvalidArgumentException('Password is required.');
         }
         if (filter_var($siteUrl, FILTER_VALIDATE_URL) === false) {
             throw new InvalidArgumentException('Site URL must be a valid URL.');
@@ -47,8 +47,25 @@ final class CreateDraftRequest
             throw new InvalidArgumentException('Site URL must not contain a query string.');
         }
 
-        $this->siteUrl = rtrim($siteUrl, '/');
-        $this->username = $username;
-        $this->password = $password;
+        return rtrim($siteUrl, '/');
+    }
+
+    public static function validateUsername(string $username): string
+    {
+        $username = trim($username);
+        if ($username === '') {
+            throw new InvalidArgumentException('Username is required.');
+        }
+
+        return $username;
+    }
+
+    public static function validatePassword(string $password): string
+    {
+        if ($password === '') {
+            throw new InvalidArgumentException('Password is required.');
+        }
+
+        return $password;
     }
 }

@@ -198,6 +198,29 @@ exec($command, $cliOutput, $cliStatus);
 $expect($cliStatus === 1, 'invalid CLI request must fail');
 $expect(!str_contains(implode("\n", $cliOutput), 'argument-secret'), 'CLI output must not expose passwords');
 
+$cliValidationCases = [
+    [[], 'Site URL is required.'],
+    [['--site=https://example.com'], 'Username is required.'],
+    [[
+        '--site=https://example.com',
+        '--username=admin',
+    ], 'WordPress Application Password is required.'],
+];
+foreach ($cliValidationCases as [$arguments, $expectedMessage]) {
+    $validationCommand = sprintf(
+        '%s %s %s 2>&1',
+        escapeshellarg(PHP_BINARY),
+        escapeshellarg($root . '/index.php'),
+        implode(' ', array_map('escapeshellarg', $arguments)),
+    );
+    exec($validationCommand, $validationOutput, $validationStatus);
+    $expect(
+        $validationStatus === 1 && str_contains(implode("\n", $validationOutput), $expectedMessage),
+        'CLI validation must report errors in site, username, password order: ' . $expectedMessage,
+    );
+    $validationOutput = [];
+}
+
 foreach (['//attacker.example/collect', '/\\attacker.example/collect'] as $hostileScriptName) {
     $_SERVER['REQUEST_METHOD'] = 'GET';
     $_SERVER['SCRIPT_NAME'] = $hostileScriptName;

@@ -42,8 +42,9 @@ $escape = static fn (string $value): string => htmlspecialchars(
         </p>
     <?php endif; ?>
     <form method="post" action="<?= $escape($formAction) ?>" autocomplete="off">
-        <label>Site URL
+        <label>WordPress installation URL
             <input name="site" type="url" required value="<?= $escape($site) ?>" placeholder="https://example.com">
+            <small>Use the site root, including a subdirectory when applicable. Do not enter a REST endpoint.</small>
         </label>
         <label>Username
             <input name="username" type="text" required value="<?= $escape($username) ?>">

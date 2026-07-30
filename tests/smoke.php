@@ -188,6 +188,29 @@ $resolvedPassword = $passwordMethod->invoke($cliController, ['password' => 'argu
 putenv('WP_PASSWORD');
 $expect($resolvedPassword === 'argument-secret', '--password must take priority over WP_PASSWORD');
 
+$siteUrlCases = [
+    ['https://example.com', true],
+    ['http://example.local:8080/wordpress/', true],
+    ['https://example.com/wp-json/', false],
+    ['https://example.com/wp-json/wp/v2/posts', false],
+    ['https://example.com/?rest_route=/wp/v2/posts', false],
+];
+foreach ($siteUrlCases as [$siteUrl, $shouldBeValid]) {
+    try {
+        CreateDraftRequest::validateSiteUrl($siteUrl);
+        $isValid = true;
+    } catch (InvalidArgumentException $exception) {
+        $isValid = false;
+        if (!$shouldBeValid) {
+            $expect(
+                str_contains($exception->getMessage(), 'installation root'),
+                'REST endpoint input must explain that the installation root URL is required',
+            );
+        }
+    }
+    $expect($isValid === $shouldBeValid, 'site URL classification failed: ' . $siteUrl);
+}
+
 $command = sprintf(
     '%s %s --site=invalid --username=test --password=%s 2>&1',
     escapeshellarg(PHP_BINARY),
@@ -197,6 +220,16 @@ $command = sprintf(
 exec($command, $cliOutput, $cliStatus);
 $expect($cliStatus === 1, 'invalid CLI request must fail');
 $expect(!str_contains(implode("\n", $cliOutput), 'argument-secret'), 'CLI output must not expose passwords');
+
+$helpCommand = sprintf('%s %s --help', escapeshellarg(PHP_BINARY), escapeshellarg($root . '/index.php'));
+exec($helpCommand, $helpOutput, $helpStatus);
+$helpText = implode("\n", $helpOutput);
+$expect($helpStatus === 0, 'CLI help must succeed');
+$expect(
+    str_contains($helpText, 'WordPress installation root URL')
+    && str_contains($helpText, 'Do not pass'),
+    'CLI help must distinguish the site URL from a REST endpoint',
+);
 
 $cliValidationCases = [
     [[], 'Site URL is required.'],

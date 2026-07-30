@@ -43,6 +43,15 @@ final class CreateDraftRequest
         if (isset($parts['user']) || isset($parts['pass'])) {
             throw new InvalidArgumentException('Site URL must not contain user information.');
         }
+        $path = rawurldecode($parts['path'] ?? '');
+        $isPrettyRestEndpoint = preg_match('~(?:^|/)wp-json(?:/|$)~i', $path) === 1;
+        $isPlainRestEndpoint = isset($parts['query'])
+            && preg_match('~(?:^|&)rest_route(?:=|&)~i', $parts['query']) === 1;
+        if ($isPrettyRestEndpoint || $isPlainRestEndpoint) {
+            throw new InvalidArgumentException(
+                'Site URL must be the WordPress installation root URL, not a REST API endpoint.',
+            );
+        }
         if (isset($parts['query'])) {
             throw new InvalidArgumentException('Site URL must not contain a query string.');
         }

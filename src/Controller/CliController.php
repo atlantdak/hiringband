@@ -28,6 +28,9 @@ Create a WordPress draft post through the REST API.
 Usage:
   php index.php --site="https://example.com" --username="admin"
 
+SITE must be the WordPress installation root URL, including http:// or https://.
+Include the installation subdirectory when needed. Do not pass /wp-json/ or a posts endpoint.
+
 Enter the WordPress Application Password when prompted.
 The parameter remains named password and is sent unchanged using HTTP Basic Authentication.
 

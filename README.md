@@ -31,6 +31,14 @@ php index.php \
 Replace the site and username with your WordPress values. At the prompt, paste the Application
 Password and press Enter:
 
+`--site` must be the WordPress installation root URL:
+
+- `https://example.com`
+- `https://example.com/wordpress` when WordPress is installed in `/wordpress`
+
+Do not pass `/wp-json/`, `/wp-json/wp/v2/posts`, or `?rest_route=/wp/v2/posts`. The application
+discovers the correct REST endpoint automatically.
+
 ```text
 Application Password:
 ```

@@ -51,13 +51,15 @@ Draft created successfully. Post ID: 123
 
 The parameter is named `password` and is sent unchanged using HTTP Basic Authentication.
 
-## 4. Run in a browser
+## 4. Start the local server
 
 ```bash
 composer serve
 ```
 
 The server keeps running until you stop it with `Ctrl+C`.
+
+## 5. Use the browser form
 
 Open:
 
@@ -67,7 +69,7 @@ http://127.0.0.1:49174/index.php
 
 Enter the WordPress site URL, username, and Application Password, then click **Create draft**.
 
-## 5. Use the JSON API
+## 6. Use the JSON API
 
 ```bash
 curl http://127.0.0.1:49174/index.php \

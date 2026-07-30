@@ -1,0 +1,29 @@
+{
+    "name": "app/wordpress-draft-creator",
+    "description": "Small WordPress REST API draft post creator",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.1",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "scripts": {
+        "test": [
+            "@php tests/smoke.php",
+            "sh tests/run-http-smoke.sh"
+        ],
+        "check": [
+            "@composer validate --strict",
+            "find index.php src views tests -type f -name '*.php' -print0 | xargs -0 -n1 php -l",
+            "@test"
+        ],
+        "serve": "php -S 127.0.0.1:49174 -t ."
+    }
+}

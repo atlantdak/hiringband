@@ -24,6 +24,9 @@
             "find index.php src views tests -type f -name '*.php' -print0 | xargs -0 -n1 php -l",
             "@test"
         ],
-        "serve": "php -S 127.0.0.1:49174 -t ."
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "php -S 127.0.0.1:49174 -t ."
+        ]
     }
 }

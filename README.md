@@ -57,6 +57,8 @@ The parameter is named `password` and is sent unchanged using HTTP Basic Authent
 composer serve
 ```
 
+The server keeps running until you stop it with `Ctrl+C`.
+
 Open:
 
 ```text

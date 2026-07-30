@@ -14,6 +14,8 @@ For manual HTTP checks, start a separate local server:
 composer serve
 ```
 
+This is a long-running manual command. Stop it with `Ctrl+C`; do not wait for it to finish.
+
 Then run:
 
 ```bash
